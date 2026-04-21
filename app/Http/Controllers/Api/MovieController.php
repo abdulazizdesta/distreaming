@@ -193,7 +193,7 @@ class MovieController extends Controller
            
              if($request->hasFile("thumbnail")){
                 if($movie->thumbnail){
-                    Storage::delete($movie->thumbnail);
+                    Storage::disk("public")->delete($movie->thumbnail);
                 }
                 $path = $request->file("thumbnail")->store("movies", "public");
                 $data["thumbnail"] = $path;
