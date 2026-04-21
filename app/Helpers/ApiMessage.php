@@ -13,7 +13,7 @@ class ApiMessage{
         ], $code);
     }
 
-    public static function error($message, $errors, $code = 400){
+    public static function error($message, $errors, $code = 500){
 
         return response()->json([
             "success" => false,
