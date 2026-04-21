@@ -109,7 +109,7 @@ class MovieController extends Controller
              }
              
              $movie = Movie::create($data);
-             
+
              return ApiMessage::success("Movie created successfully", $movie, 201);
          } catch (\Exception $e) {
              return ApiMessage::error("Error", $e->getMessage(), 500);

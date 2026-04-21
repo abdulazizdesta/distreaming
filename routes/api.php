@@ -13,4 +13,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
     // Movie Category
     Route::apiResources(["categories" => MovieCategoryController::class]);
+    // Movie
+    Route::apiResources(["categories" => MovieCategoryController::class]);
 });
