@@ -53,8 +53,17 @@ class MovieController extends Controller
             }
 
             $movies = $query->paginate($per_page);
+            $response = [
+                'meta' => [
+                    'current_page' => $movies->currentPage(),
+                    'last_page' => $movies->lastPage(),
+                    'per_page' => $movies->perPage(),
+                    'total' => $movies->total(),
+                ],
+                'data' => $movies->items(),
+            ];
 
-            return ApiMessage::success("Success get data", $movies, 200);
+            return ApiMessage::success("Success get data", $response, 200);
 
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
