@@ -6,7 +6,9 @@ use App\Helpers\ApiMessage;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -32,8 +34,9 @@ class AuthController extends Controller
             $user = User::create($request->all());
             return ApiMessage::success("User created successfully", $user, 201);
 
-        }catch(\Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 400);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -61,8 +64,9 @@ class AuthController extends Controller
             $token = $user->createToken("auth_token")->plainTextToken;
             return ApiMessage::success("User logged in successfully", ["token" => $token], 200);
 
-        }catch(\Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 400);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -71,16 +75,18 @@ class AuthController extends Controller
             $request->user()->currentAccessToken()->delete();
             return ApiMessage::success("User logged out successfully", null, 200);
 
-        }catch(\Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 400);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Terjadi kesalahan server", null, 500);
         }
     }
 
     public function profile(Request $request){
         try{
             return ApiMessage::success("Succes get User Profile", $request->user(), 200);
-        }catch(\Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 400);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 }

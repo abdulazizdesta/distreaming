@@ -8,6 +8,7 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Storage;
+use Throwable;
 use Validator;
 
 class MovieController extends Controller
@@ -65,7 +66,7 @@ class MovieController extends Controller
 
             return ApiMessage::success("Success get data", $response, 200);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th->getMessage());
             return ApiMessage::error("Error internal server", null, 500);
         }
@@ -120,9 +121,10 @@ class MovieController extends Controller
              }
              
              $movie = Movie::create($data);
+             $movie->load('category');
 
              return ApiMessage::success("Movie created successfully", $movie, 201);
-         } catch (\Throwable $th) {
+         } catch (Throwable $th) {
             Log::error($th->getMessage());
             return ApiMessage::error("Error internal server", null, 500);
          }
@@ -142,7 +144,7 @@ class MovieController extends Controller
 
             return ApiMessage::success("Success get data", $movie, 200);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th->getMessage());
             return ApiMessage::error("Error internal server", null, 500);
         }
@@ -200,9 +202,10 @@ class MovieController extends Controller
              }
 
              $movie->update($data);
+             $movie->load('category');
 
              return ApiMessage::success("Movie updated successfully", $movie, 200);
-         } catch (\Throwable $th) {
+         } catch (Throwable $th) {
             Log::error($th->getMessage());
             return ApiMessage::error("Error internal server", null, 500);
          }
@@ -225,7 +228,7 @@ class MovieController extends Controller
             }
             $movie->delete();
             return ApiMessage::success("Movie deleted successfully", null, 200);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th->getMessage());
             return ApiMessage::error("Error internal server", null, 500);
         }
