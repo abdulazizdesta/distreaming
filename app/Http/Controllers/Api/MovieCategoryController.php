@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ApiMessage;
 use App\Http\Controllers\Controller;
 use App\Models\MovieCategory;
-use Illuminate\Support\Facades\Validator;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class MovieCategoryController extends Controller
 {
@@ -45,8 +46,9 @@ class MovieCategoryController extends Controller
 
             return ApiMessage::success("Succes", $response, 200);
 
-        }catch(Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 404);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         };
     }
 
@@ -77,8 +79,9 @@ class MovieCategoryController extends Controller
         try{
             $movieCategory = MovieCategory::create($request->only("name", "description"));
             return ApiMessage::success("Movie category created successfully", $movieCategory, 201);
-        }catch(Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 404);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -96,8 +99,9 @@ class MovieCategoryController extends Controller
 
             return ApiMessage::success("Success", $movieCategory, 200);
 
-        }catch(Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        }catch(Throwable $th){
+             Log::error($th->getMessage());
+             return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -134,8 +138,9 @@ class MovieCategoryController extends Controller
 
             $movieCategory->update($request->only("name", "description"));
             return ApiMessage::success("Movie category updated successfully", $movieCategory, 200);
-        }catch(Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -154,8 +159,9 @@ class MovieCategoryController extends Controller
 
             $movieCategory->delete();
             return ApiMessage::success("Movie category deleted successfully", null, 200);
-        }catch(Exception $e){
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        }catch(Throwable $th){
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 }

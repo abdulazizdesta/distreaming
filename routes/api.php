@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MovieCategoryController;
+use App\Http\Controllers\Api\MovieController;
 use Illuminate\Support\Facades\Route;
 
 Route::post("auth/register", [AuthController::class, "registration"]);
@@ -14,5 +15,5 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Movie Category
     Route::apiResources(["categories" => MovieCategoryController::class]);
     // Movie
-    Route::apiResources(["categories" => MovieCategoryController::class]);
+    Route::apiResources(["movies" => MovieController::class]);
 });

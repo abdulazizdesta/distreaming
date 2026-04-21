@@ -38,5 +38,7 @@ class Movie extends Model
             }
         );
     }
+
+    protected $appends = ['rating_class'];
     
 }

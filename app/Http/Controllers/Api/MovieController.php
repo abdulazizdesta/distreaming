@@ -6,6 +6,7 @@ use App\Helpers\ApiMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Movie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Storage;
 use Validator;
 
@@ -55,8 +56,9 @@ class MovieController extends Controller
 
             return ApiMessage::success("Success get data", $movies, 200);
 
-        } catch (\Exception $e) {
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -69,7 +71,7 @@ class MovieController extends Controller
             "category_id" => "required|exists:movie_categories,id",
             "title" => "required|string|max:255",
             "description" => "required|string",
-            "rating" => "required|numeric:between:0,9.99",
+            "rating" => "required|numeric|min:0|max:10",
             "release_year" => "required|integer|min:1888|max:" . date("Y"),
             "thumbnail" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
          ];
@@ -111,8 +113,9 @@ class MovieController extends Controller
              $movie = Movie::create($data);
 
              return ApiMessage::success("Movie created successfully", $movie, 201);
-         } catch (\Exception $e) {
-             return ApiMessage::error("Error", $e->getMessage(), 500);
+         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
          }
     }
 
@@ -130,8 +133,9 @@ class MovieController extends Controller
 
             return ApiMessage::success("Success get data", $movie, 200);
 
-        } catch (\Exception $e) {
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 
@@ -144,7 +148,7 @@ class MovieController extends Controller
             "category_id" => "sometimes|exists:movie_categories,id",
             "title" => "sometimes|string|max:255",
             "description" => "sometimes|string",
-            "rating" => "sometimes|numeric:between:0,9.99",
+            "rating" => "sometimes|numeric|min:0|max:10",
             "release_year" => "sometimes|integer|min:1888|max:" . date("Y"),
             "thumbnail" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
          ];
@@ -189,8 +193,9 @@ class MovieController extends Controller
              $movie->update($data);
 
              return ApiMessage::success("Movie updated successfully", $movie, 200);
-         } catch (\Exception $e) {
-             return ApiMessage::error("Error", $e->getMessage(), 500);
+         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
          }
     }
 
@@ -206,10 +211,14 @@ class MovieController extends Controller
                 return ApiMessage::error("Movie not found", null, 404);
             }
 
+            if($movie->thumbnail){
+                Storage::disk("public")->delete($movie->thumbnail);
+            }
             $movie->delete();
             return ApiMessage::success("Movie deleted successfully", null, 200);
-        } catch (\Exception $e) {
-            return ApiMessage::error("Error", $e->getMessage(), 500);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return ApiMessage::error("Error internal server", null, 500);
         }
     }
 }
