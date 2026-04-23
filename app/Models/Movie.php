@@ -29,7 +29,7 @@ class Movie extends Model
         return Attribute::make(
             get: function() {
                 if($this->rating >= 8.5){
-                    return "Top-rated";
+                    return "Top rated";
                 }elseif($this->rating >= 7.0){
                     return "Popular";
                 }else{

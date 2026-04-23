@@ -37,16 +37,20 @@ class MovieController extends Controller
                 $query->where("category_id", $request->category_id);
             }
 
-            if ($request->has("release_year")) {
-                $query->where("release_year", $request->release_year);
-            }
-
-            if ($request->has("year_from") && $request->has("year_to")) {
+            if($request->has("year_from") && $request->has("year_to")){
                 $query->whereBetween("release_year", [$request->year_from, $request->year_to]);
+            }elseif($request->has("year_from")){
+                $query->where("release_year", ">=" , $request->year_from);
+            }elseif($request->has("year_to")){
+                $query->where("release_year", "<=" , $request->year_to);
             }
 
-            if ($request->has("rating")) {
-                $query->where("rating", $request->rating);
+            if($request->has("rating_from") && $request->has("rating_to")){
+                $query->whereBetween("rating", [$request->rating_from, $request->rating_to]);
+            }elseif($request->has("rating_from")){
+                $query->where("rating", ">=" , $request->rating_from);
+            }elseif($request->has("rating_to")){
+                $query->where("rating", "<=" , $request->rating_to);
             }
 
             if ($request->has("rating_from") && $request->has("rating_to")) {
