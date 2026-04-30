@@ -14,10 +14,13 @@ class AuthController extends Controller
 {
     public function registration(Request $request){
         $rules = [
-            "email"=> "required|email",
+            "name"=> "required|string|max:255",
+            "email"=> "required|email|unique:users,email",
             "password"=> "required|string|min:8",
         ];
         $messages = [
+            "name.required" => "Name is required",
+            "email.unique" => "Email has already been taken",
             "email.required"=> "Email is required",
             "email.email"=> "Email must be a valid email address",
             "password.required"=> "Password is required",
@@ -31,7 +34,11 @@ class AuthController extends Controller
             return ApiMessage::error("Error", $validator->errors(), 422);
         }
         try{
-            $user = User::create($request->all());
+            $user = User::create([
+                "name" => $request->name,
+                "email" => $request->email,
+                "password" => $request->password,
+            ]);
             return ApiMessage::success("User created successfully", $user, 201);
 
         }catch(Throwable $th){
