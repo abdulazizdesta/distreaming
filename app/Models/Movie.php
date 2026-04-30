@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\MovieCategory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Movie extends Model
@@ -40,5 +41,10 @@ class Movie extends Model
     }
 
     protected $appends = ['rating_class'];
+
+    public function creator():BelongsTo
+    { 
+        return $this->belongsTo(User::class, "created_by");
+    }
     
 }

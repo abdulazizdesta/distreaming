@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -20,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'role_id',
         'email',
         'password',
     ];
@@ -46,4 +49,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function role ():BelongsTo {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function isAdmin():bool {
+        return $this->role ?->name==='admin';
+    }
+
+    public function isViewer():bool {
+        return $this->role ?->name==='viewer';
+    }
+
+    public function isMedia():bool {
+        return $this->role ?->name==='media';
+    }
+
+    protected $with =['role'];
 }

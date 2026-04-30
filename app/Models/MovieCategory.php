@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MovieCategory extends Model
@@ -14,9 +15,10 @@ class MovieCategory extends Model
     protected $fillable = [
         "name",
         "description",
+        "created_by",
     ];
 
-    public function movies()
+    public function movies():HasMany
     { 
         return $this->hasMany(Movie::class, "category_id");
     }
