@@ -16,7 +16,7 @@ class AuthController extends Controller
         $rules = [
             "name"=> "required|string|max:255",
             "email"=> "required|email|unique:users,email",
-            "password"=> "required|string|min:8",
+            "password"=> "required|string|min:8|confirmed",
         ];
         $messages = [
             "name.required" => "Name is required",
@@ -26,6 +26,7 @@ class AuthController extends Controller
             "password.required"=> "Password is required",
             "password.string"=> "Password must be a string",
             "password.min"=> "Password must be at least 8 characters",
+            "password.confirmed"=> "Password & password confirmation does not match"
 
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -69,7 +70,8 @@ class AuthController extends Controller
                 return ApiMessage::error("Email or password is invalid", null, 401);
             }
             $token = $user->createToken("auth_token")->plainTextToken;
-            return ApiMessage::success("User logged in successfully", ["token" => $token], 200);
+            $roleUser = $user->role->name;
+            return ApiMessage::success("User logged in successfully", ["token" => $token, "role" => $roleUser, "name" => $user->name], 200);
 
         }catch(Throwable $th){
             Log::error($th->getMessage());

@@ -4,6 +4,7 @@ use App\Helpers\ApiMessage;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MovieCategoryController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,8 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::apiResources(["categories" => MovieCategoryController::class]);
     // Movie
     Route::apiResources(["movies" => MovieController::class]);
+    // User
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('users', UserController::class)->except(['store']);
+});
 });

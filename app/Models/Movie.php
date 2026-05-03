@@ -19,6 +19,7 @@ class Movie extends Model
         "rating",
         "release_year",
         "thumbnail",
+        "created_by",
     ];
 
     public function category(){

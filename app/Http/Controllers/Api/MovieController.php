@@ -20,7 +20,7 @@ class MovieController extends Controller
     {
         try {
             $query = Movie::with('category');
-            $per_page = $request->per_page ?? 10;
+            $per_page = $request->per_page ?? 1;
 
             if($request->has("search")){
                 $query->where("title", "like", "%" . $request->search . "%");
@@ -57,6 +57,10 @@ class MovieController extends Controller
                 $query->whereBetween("rating", [$request->rating_from, $request->rating_to]);
             }
 
+            if ($request->has("rating_class")) {
+                $query->where("rating_class", "=", $request->rating_class);
+            }
+
             $movies = $query->paginate($per_page);
             $response = [
                 'meta' => [
@@ -91,8 +95,8 @@ class MovieController extends Controller
          ];
 
          $messages = [
-            "category_id.required" => "Category ID is required",
-            "category_id.exists" => "Category ID must exist",
+            "category_id.required" => "Category is required",
+            "category_id.exists" => "Category must exist",
             "title.required" => "Title is required",
             "title.string" => "Title must be a string",
             "title.max" => "Title must not exceed 255 characters",
@@ -117,6 +121,7 @@ class MovieController extends Controller
          }
          try {
              $data = $request->only("category_id", "title", "description", "rating", "release_year");
+             $data['created_by'] = auth()->id();
 
              if($request->hasFile("thumbnail")){
 
